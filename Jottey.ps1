@@ -67,8 +67,10 @@ $Jottey.Controls.Add($StatusBar)
 #region gui events {
 function OpenMenuClick($Sender, $e) {
   $global:InputFile = GetFileName "C:\"
-  $InputData = Get-Content $global:InputFile
-  $TextBox.Text = $InputData
+  if($OpenFileDialog.ShowDialog() -eq (System.Windows.Forms.DialogResult.OK)){
+    $InputData = Get-Content $global:InputFile
+    $TextBox.Text = $InputData
+  }
 }
 
 function TextBoxType($Sender, $e) {
@@ -91,6 +93,7 @@ function GetFileName($InitialDirectory) {
   $OpenFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
   $OpenFileDialog.ShowDialog() | Out-Null
   $OpenFileDialog.FileName
+  return $OpenFileDialog
 }
 
 function Alert($Message) {
