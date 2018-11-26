@@ -36,6 +36,7 @@ $Jottey.Controls.Add($TextBox)
 $Menu = New-Object System.Windows.Forms.MenuStrip
 $FileMenu = New-Object System.Windows.Forms.ToolStripMenuItem
 $OpenMenu = New-Object System.Windows.Forms.ToolStripMenuItem
+$SaveAsMenu = New-Object System.Windows.Forms.ToolStripMenuItem
 
 $Menu.Items.AddRange(@($FileMenu))
 $Menu.Location = New-Object System.Drawing.Point(0, 0)
@@ -45,6 +46,7 @@ $Menu.TabIndex = 0
 $Menu.Text = "Menu"
 
 $FileMenu.DropDownItems.AddRange(@($OpenMenu))
+$FileMenu.DropDownItems.AddRange(@($SaveAsMenu))
 $FileMenu.Name = "fileToolStripMenuItem"
 $FileMenu.Size = New-Object System.Drawing.Size(35, 20)
 $FileMenu.Text = "&File"
@@ -53,6 +55,11 @@ $OpenMenu.Name = "openToolStripMenuItem"
 $OpenMenu.Size = New-Object System.Drawing.Size(152, 22)
 $OpenMenu.Text = "&Open"
 $OpenMenu.Add_Click( { OpenMenuClick $OpenMenu $EventArgs} )
+
+$SaveAsMenu.Name = "saveAsToolStripMenuItem"
+$SaveAsMenu.Size = New-Object System.Drawing.Size(269, 22)
+$SaveAsMenu.Text = "&Save As"
+$SaveAsMenu.Add_Click( { SaveAsMenuClick $SaveAsMenu $EventArgs} )
 
 $Jottey.Controls.Add($Menu)
 
@@ -71,6 +78,20 @@ function OpenMenuClick($Sender, $e) {
     $InputData = Get-Content $global:InputFile
     $TextBox.Text = $InputData
   }
+}
+
+# REQUIRES WORK ON SAVING THE CONTENTS OF THE FILE
+function SaveAsMenuClick($Sender, $e) {
+  
+  $SaveFileDialog = New-Object System.Windows.Forms.SaveFileDialog
+  $SaveFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*" 
+  $SaveFileDialog.Title = "Save As"
+  $SaveFileDialog.ShowDialog() | Out-Null
+
+  if($SaveFileDialog.FileName -ne ""){  
+      $SaveFileDialog.OpenFile()
+      $global:InputFile = $SaveFileDialog.FileName
+  }  
 }
 
 function TextBoxType($Sender, $e) {
