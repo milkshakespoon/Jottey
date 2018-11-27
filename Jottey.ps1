@@ -10,7 +10,7 @@ Add-Type -AssemblyName System.IO
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 # Globals
-$global:InputFile = ""
+$global:InputFile = "C:\Users\adam.gentle\Desktop\test2.txt"
 
 #region begin GUI{ 
 
@@ -88,9 +88,11 @@ function SaveAsMenuClick($Sender, $e) {
   $SaveFileDialog.Title = "Save As"
   $SaveFileDialog.ShowDialog() | Out-Null
 
-  if($SaveFileDialog.FileName -ne ""){  
+  if(($SaveFileDialog.FileName -ne "") -and ($SaveFileDialog.ShowDialog() -eq (System.Windows.Forms.DialogResult.OK))){  
       $SaveFileDialog.OpenFile()
       $global:InputFile = $SaveFileDialog.FileName
+      File.WriteAllText($SaveFileDialog.FileName, $TextBox.Text)
+
   }  
 }
 
@@ -103,7 +105,6 @@ function TextBoxType($Sender, $e) {
   $y = $TextBox.GetLineFromCharIndex($s) + 1
   $x = $s - $TextBox.GetFirstCharIndexOfCurrentLine() + 1
   $StatusBarPanel.Text = "Ln: $y, Col: $x"
-
 }
 
 function GetFileName($InitialDirectory) {
@@ -114,7 +115,7 @@ function GetFileName($InitialDirectory) {
   $OpenFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
   $OpenFileDialog.ShowDialog() | Out-Null
   $OpenFileDialog.FileName
-  return $OpenFileDialog
+  return $OpenFileDialog.FileName
 }
 
 function Alert($Message) {
