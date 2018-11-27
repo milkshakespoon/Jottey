@@ -73,8 +73,16 @@ $Jottey.Controls.Add($StatusBar)
 
 #region gui events {
 function OpenMenuClick($Sender, $e) {
-  $global:InputFile = GetFileName "C:\"
-  if($OpenFileDialog.ShowDialog() -eq (System.Windows.Forms.DialogResult.OK)){
+  [System.Reflection.Assembly]::LoadWithPartialName("System.Windows.Forms") | Out-Null
+  
+  $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+  $OpenFileDialog.InitialDirectory = "C:\"
+  $OpenFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
+  System.Windows.Forms.DialogResult $Result = $OpenFileDialog.ShowDialog() | Out-Null
+  $OpenFileDialog.FileName
+
+  if($Result -eq (DialogResult.OK)){
+    $global:InputFile = $OpenFileDialog.FileName
     $InputData = Get-Content $global:InputFile
     $TextBox.Text = $InputData
   }
@@ -92,7 +100,6 @@ function SaveAsMenuClick($Sender, $e) {
       $SaveFileDialog.OpenFile()
       $global:InputFile = $SaveFileDialog.FileName
       File.WriteAllText($SaveFileDialog.FileName, $TextBox.Text)
-
   }  
 }
 
@@ -105,17 +112,6 @@ function TextBoxType($Sender, $e) {
   $y = $TextBox.GetLineFromCharIndex($s) + 1
   $x = $s - $TextBox.GetFirstCharIndexOfCurrentLine() + 1
   $StatusBarPanel.Text = "Ln: $y, Col: $x"
-}
-
-function GetFileName($InitialDirectory) {
-  [System.Reflection.Assembly]::LoadWithPartialName("System.windows.forms") | Out-Null
-  
-  $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-  $OpenFileDialog.InitialDirectory = $InitialDirectory
-  $OpenFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
-  $OpenFileDialog.ShowDialog() | Out-Null
-  $OpenFileDialog.FileName
-  return $OpenFileDialog.FileName
 }
 
 function Alert($Message) {
