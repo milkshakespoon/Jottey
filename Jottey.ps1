@@ -78,29 +78,14 @@ function OpenMenuClick($Sender, $e) {
   $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
   $OpenFileDialog.InitialDirectory = "C:\"
   $OpenFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*"
-  System.Windows.Forms.DialogResult $Result = $OpenFileDialog.ShowDialog() | Out-Null
+  $Result = $OpenFileDialog.ShowDialog() | Out-Null
   $OpenFileDialog.FileName
 
-  if($Result -eq (DialogResult.OK)){
+  if($Result){
     $global:InputFile = $OpenFileDialog.FileName
     $InputData = Get-Content $global:InputFile
     $TextBox.Text = $InputData
   }
-}
-
-# REQUIRES WORK ON SAVING THE CONTENTS OF THE FILE
-function SaveAsMenuClick($Sender, $e) {
-  
-  $SaveFileDialog = New-Object System.Windows.Forms.SaveFileDialog
-  $SaveFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*" 
-  $SaveFileDialog.Title = "Save As"
-  $SaveFileDialog.ShowDialog() | Out-Null
-
-  if(($SaveFileDialog.FileName -ne "") -and ($SaveFileDialog.ShowDialog() -eq (System.Windows.Forms.DialogResult.OK))){  
-      $SaveFileDialog.OpenFile()
-      $global:InputFile = $SaveFileDialog.FileName
-      File.WriteAllText($SaveFileDialog.FileName, $TextBox.Text)
-  }  
 }
 
 function TextBoxType($Sender, $e) {
