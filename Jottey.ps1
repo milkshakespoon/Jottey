@@ -10,7 +10,7 @@ Add-Type -AssemblyName System.IO
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 # Globals
-$global:InputFile = "C:\Users\adam.gentle\Desktop\test2.txt"
+$global:InputFile = "C:\Temp\test2.txt"
 
 #region begin GUI{ 
 
